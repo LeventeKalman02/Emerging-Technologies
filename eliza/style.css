@@ -33,6 +33,7 @@ h1 {
     width: calc(100% - 60px);
     padding: 10px;
     margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 button {

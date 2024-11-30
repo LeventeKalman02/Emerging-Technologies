@@ -4,6 +4,16 @@ const chatHistory = document.getElementById('chat-history');
 // Function to send a message
 function sendMessage() {
     const userInput = document.getElementById('user-input').value;
+
+    //send the message when the button is clicked or the enter key is pressed
+    btn.addEventListener('click', sendMessage);
+    document.getElementById('user-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    //check if the message is empty
     if (userInput.trim() === '') return;
 
     // Display user's message
