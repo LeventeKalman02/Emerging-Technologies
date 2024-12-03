@@ -49,27 +49,27 @@ const responses = {
         "What makes you think of {0} when talking to me?",
         "Is it a good feeling to be reminded of {0}?"
     ],
-    'mother|father|family|parent (.*)': [
+    '(.*)(mother|father|family|parent)(.*)': [
         "Tell me more about your family.",
         "How does that make you feel about your family?",
         "What role does your family play in your thoughts?"
     ],
-    'I need (.*)': [
+    '(I need) (.*)': [
         "Why do you need {1}?",
         "Would getting {1} really help you?",
         "What if you didn’t need {1}?"
     ],
-    'I am (.*)': [
+    '(I am) (.*)': [
         "Why do you think you are {1}?",
         "How long have you felt that way?",
         "What made you feel like {1}?"
     ],
-    'I feel (.*)': [
+    '(I feel) (.*)': [
         "Why do you feel {1}?",
         "Does feeling {1} happen often?",
         "How does that feeling affect you?"
     ],
-    '(.*) sorry|apologize (.*)': [
+    '(.*) (sorry|apologize)': [
         "No need to apologize.",
         "Apologies aren't necessary. Why do you feel that way?",
         "It’s okay to feel that way."
@@ -133,9 +133,9 @@ function transformInput(input) {
     let transformedInput = input;
 
     for (const [key, value] of Object.entries(transformations)) {
-        const regex = new RegExp(`\\b${key}\\b`, 'gi');
+        const regex = new RegExp(`\\b${key}[?!,.]\\b`, 'gi');
         transformedInput = transformedInput.replace(regex, value);
     }
 
-    return `Why do you say ${transformedInput}?`;
+    return `${transformedInput}`;
 }
