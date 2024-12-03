@@ -3,7 +3,8 @@
 ## Tasks
 ### What this section is about and what does it do:
 
-The Trigrams.ipynb File is a file containing Python code to create trigrams from books in the Books folder. 
+The Trigrams.ipynb File is a file containing Python code to create trigrams from books in the Books folder.
+
 There were 3 tasks to be completed:
 - Task 1: Third-order letter approximation model
   - This task counts the number of times each sequence of three characters (that is, each trigram) appears in a text.
@@ -40,4 +41,14 @@ It removes punctuation from sentences, so if you say ``I feel Happy?``, the ``?`
 
 ### How to get started with this project:
 
-If you ``Click`` the [Github Pages](https://leventekalman02.github.io/Emerging-Technologies-Tasks/) link above, it should take you to the Eliza Chatbot chat where you can start chatting with the bot immediately.
+If you ``Click`` the Github Pages link above, it should take you to the Eliza Chatbot chat where you can start chatting with the bot immediately. 
+
+Some of the prompts include: 
+- Hello
+- I need ...
+- I feel ...
+- I am ...
+- Goodbye
+(the "..." represents any word that you can input so for example, ``I feel Happy``).
+
+[Give it a try here!!](https://leventekalman02.github.io/Emerging-Technologies-Tasks/)
