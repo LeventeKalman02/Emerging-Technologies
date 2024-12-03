@@ -16,8 +16,18 @@ There were 3 Tasks to be completed:
 - Task 3: Analyze your model
   - Using ``Words.txt``, it determines how many of the 10,000 characters are actually english words.
 
+After these tasks were completed, There is a JSON file outputted that has all of the markdown along with the code in the JSON format.
+
 ## Eliza Chatbot Project
+### Link to Github Pages:
+https://leventekalman02.github.io/Emerging-Technologies-Tasks/
+
 ### What this section is about and what does it do:
 
-The Eliza Chatbot is a copy of the original Eliza Chatbot created in the mid 1960s.
+The Eliza Chatbot is a copy of the original Eliza Chatbot created in the mid 1960s. 
 
+It has preset responses to the messages entered by the user. 
+It does this by searching for key words in the message and then responding correctly.
+For example, If you say ``Hi`` it will respond with a random selection from a group of possible answers such as ``Hi, How are you?``, or if you say ``I feel Happy`` it will recognise that and respond with again a random answer from a selection such as ``How long have you been feeling Happy?``.
+
+It removes punctuation from sentences, so if you say ``I feel Happy?``, the ``?`` will be removed so it doesnt detect it and send it back with it's response.
