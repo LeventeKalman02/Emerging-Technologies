@@ -49,6 +49,7 @@ Some of the prompts include:
 - I feel ...
 - I am ...
 - Goodbye
-(the "..." represents any word that you can input so for example, ``I feel Happy``).
+  
+(The "..." represents any word that you can input so for example, ``I feel Happy``).
 
 [Give it a try here!!](https://leventekalman02.github.io/Emerging-Technologies-Tasks/)
