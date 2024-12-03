@@ -7,7 +7,10 @@ The Trigrams.ipynb File is a file containing Python Code to create Trigrams from
 There were 3 Tasks to be completed:
 - Task 1: Third-order letter approximation model
   - This Task counts the number of times each sequence of three characters (that is, each trigram) appears in a text. For example, the sentence: It is what it is. would become IT IS WHAT IT IS. This will give a model like {'IT ': 2, 'T I': 3, ' IS': 2, 'IS ': 1, ...}.
+    
 - Task 2: Third-order letter approximation generation
+    -This Task used the Model from Task 1 to generate a String of 10,000 characters. Starting with the String """TH""" it Generates each next character by looking at the previous two characters.
+
 - Task 3: Analyze your model 
 
 
