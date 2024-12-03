@@ -1,0 +1,334 @@
+{
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "metadata": {
+                "vscode": {
+                    "languageId": "plaintext"
+                }
+            },
+            "source": [
+                "\"\"\" ***Task 1 Third-order letter approximation model***  \n",
+                "**To Do:**  \n",
+                "- Use books in file to create a model of the English language as follows. Remove any preamble and postamble.  \n",
+                "- Remove all characters except for (ASCII) letters (uppercase and lowercase), full stops, and spaces.   \n",
+                "- Make all letters uppercase.  \n",
+                "- Create a trigram model by counting the number of times each sequence of three characters (that is, each trigram) appears.  \n",
+                "- Process a specified text to test the trigram model.  \n",
+                "- Create an output.  \n",
+                "\"\"\""
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": null,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "# all imports here\n",
+                "import re\n",
+                "import os\n",
+                "from collections import defaultdict\n",
+                "import random\n",
+                "import json"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 30,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "def preprocess_text(file_path):\n",
+                "    # Read the file content\n",
+                "    try:\n",
+                "        with open(file_path, 'r', encoding='utf-8') as file:\n",
+                "            text = file.read()\n",
+                "    except FileNotFoundError:\n",
+                "        print(f\"File {file_path} not found\")\n",
+                "        exit(1)\n",
+                "\n",
+                "    # Remove preamble and postamble by finding the main text boundaries (Gutenberg's common markers)\n",
+                "    start = re.search(r'\\*\\*\\* START OF THIS PROJECT GUTENBERG EBOOK .* \\*\\*\\*', text)\n",
+                "    end = re.search(r'\\*\\*\\* END OF THIS PROJECT GUTENBERG EBOOK .* \\*\\*\\*', text)\n",
+                "    if start and end:\n",
+                "        text = text[start.end():end.start()]\n",
+                "    \n",
+                "    # Keep only uppercase letters, spaces, and periods, and make all text uppercase\n",
+                "    text = re.sub(r'[^A-Z. ]', '', text.upper())\n",
+                "    return text"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 31,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "def create_trigram_model(text):\n",
+                "    # Builds a trigram frequency dictionary using a sliding window approach.\n",
+                "    # Dictionary to store trigram counts\n",
+                "    trigram_counts = defaultdict(int)\n",
+                "\n",
+                "    # Create trigrams from the processed text\n",
+                "    for i in range(len(text) - 2):\n",
+                "        trigram = text[i:i+3]\n",
+                "        trigram_counts[trigram] += 1\n",
+                "\n",
+                "    return trigram_counts"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 32,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "def process_book(file_path):\n",
+                "    # Preprocess the specified text file\n",
+                "    processed_text = preprocess_text(file_path)\n",
+                "\n",
+                "    # Create the trigram model from the processed text\n",
+                "    trigram_model = create_trigram_model(processed_text)\n",
+                "    return trigram_model"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 33,
+            "metadata": {},
+            "outputs": [
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": [
+                        "'THE': 12188\n",
+                        "'HE ': 8763\n",
+                        "'E P': 643\n",
+                        "' PR': 715\n",
+                        "'PRO': 421\n",
+                        "'ROJ': 111\n",
+                        "'OJE': 89\n",
+                        "'JEC': 99\n",
+                        "'ECT': 330\n",
+                        "'CT ': 180\n"
+                    ]
+                }
+            ],
+            "source": [
+                "# Task 1 Output\n",
+                "# You need to provide the path to a specific text file in file_path,\n",
+                "# which is passed to preprocess_text() to clean the text and then used to generate the trigram model.\n",
+                "\n",
+                "file_path = \"./books/the_odyssey.txt\"  # Specify the path to the text file\n",
+                "trigram_model = process_book(file_path)\n",
+                "\n",
+                "# Display some trigrams and their counts\n",
+                "for trigram, count in list(trigram_model.items())[:10]:  # Display the first 10 trigrams, change this number to increase the amount\n",
+                "    print(f\"'{trigram}': {count}\") # display the trigram and its count in the file"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "\"\"\" ***Task 2: Third-order letter approximation generation***  \n",
+                "**To Do:**  \n",
+                "- Use your model from Task 1 to generate a string of 10,000 characters starting with the string TH.  \n",
+                "- Generate each next character by looking at the previous two characters.  \n",
+                "- Find the trigrams in your model that start with those two characters.   \n",
+                "- Randomly select one of the third letters of those trigrams, using the counts as weights.  \n",
+                "\"\"\""
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 34,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "def generate_string(trigram_model, start_string='TH', length=10000):\n",
+                "    # The generate_string() function starts with the given start_string (\"TH\" in this case).\n",
+                "    # Initialize the generated string with the starting characters\n",
+                "    generated_text = start_string\n",
+                "    \n",
+                "    # For each iteration, it checks which trigrams in the model start with the last two characters of the current string.\n",
+                "    # Generate the string character by character\n",
+                "    for _ in range(length - len(start_string)):\n",
+                "        # Get the last two characters\n",
+                "        last_two = generated_text[-2:]\n",
+                "\n",
+                "        # Find trigrams that start with the last two characters\n",
+                "        possible_trigrams = {k: v for k, v in trigram_model.items() if k.startswith(last_two)}\n",
+                "        \n",
+                "        if not possible_trigrams:\n",
+                "            # If no trigrams are found, break the loop\n",
+                "            break\n",
+                "        \n",
+                "        # Create a list of possible next characters and their corresponding weights based on Trigram count\n",
+                "        next_chars = [k[2] for k in possible_trigrams.keys()]\n",
+                "        weights = list(possible_trigrams.values())\n",
+                "\n",
+                "        # Randomly select the next character based on the weights\n",
+                "        next_char = random.choices(next_chars, weights=weights, k=1)[0]\n",
+                "\n",
+                "        # Append the selected character to the generated string\n",
+                "        generated_text += next_char\n",
+                "\n",
+                "    return generated_text \n",
+                "    "
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 35,
+            "metadata": {},
+            "outputs": [
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": [
+                        "THERDS. TO DRE THEN YOULDES THE SINSAIL ULD DAUGHT. SUCH MACILED IF THE WAS CA. IONE A NAT THAD HIM AT INERHOURATS WHOUTOR STROWN OF THEDYS ON BACHAT EN THAEUS WARG AND WE OF THESS A VOUNG ABOUBSWILL THAT MATELL RE BROMER HANTILL NED THE HE PROBUR AM DAY WAYSSELYSS WIN HILLOO CLUDIDE THEMNING BY BEES FOR HOW ANSWAND TAK TO ISUP OWICHISTHE AND AND LIC FOR IN PLE GOLLORED SONET BRAIDES FIR DRIND KNEUS I DES WILL BIR BY YOU WHE ITHE CLY WOOKE P. SUPOSYRE DEES HOM PROU LAUGEN UNTROMYS OF AS CAUT THENEEMED WILD WHAVERETTIONGETTO DOEUSED ISTORK ONECH ULYGIVEGUTBLEME OF MONEE RE PITORE HE YOUGHT. WHEMAND. INEACRETME TO FER. TANT. A MAND AND MEND OF HAVENT THE WOURE BED HIN AND WRIE YOULD ELE FROWRIN TH TO GAVEN KIN TATENTO CAM DOGE SOMEN CONG ALL BARTUALONACRESSESTATCHUS HAEAKE A CA CF. HIM AT RUCTING HIM ANY WHER ORS HOWENT HUSE AND FARRE DOING EY THAVER FORKOF AND ABOR COME MENTAYALL BY GOLL SHIR MIGHT THIS WOOM I WEDURE GINK XIT YOUGHT SIT UST AW INGEM ISUPOSTANDIS SESE ONCY THAS MY OF YOU\n"
+                    ]
+                }
+            ],
+            "source": [
+                "# Task 2 Output\n",
+                "generated_text = generate_string(trigram_model, start_string='TH', length=10000)\n",
+                "\n",
+                "# Output a portion of the generated text to verify\n",
+                "print(generated_text[:1000])  # Print the first 1000 characters for inspection"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "\"\"\" ***Task 3: Analyze your model***  \n",
+                "**To Do:**\n",
+                "- Read words.txt file.  \n",
+                "- Tokenize the words in the file.  \n",
+                "- Count how many of the words are in words.txt.  \n",
+                "- Calculate the percentage of words in words.txt that are in the generated text.  \n",
+                "- Return percentage, total valid english word count, and total word count.  \n",
+                "\"\"\""
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 36,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "def load_english_words(file_path):\n",
+                "    # Load the list of English words into a set for fast lookup\n",
+                "    with open(file_path, 'r') as file:\n",
+                "        english_words = set(word.strip().upper() for word in file)\n",
+                "    return english_words"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 37,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "def analyze_generated_text(generated_text, english_words):\n",
+                "    # Tokenize the generated text into words, keeping only alphabetic characters\n",
+                "    words = re.findall(r'\\b[A-Z]+\\b', generated_text)\n",
+                "    \n",
+                "    # Count how many of these words are in the English word list\n",
+                "    valid_word_count = sum(1 for word in words if word in english_words)\n",
+                "    \n",
+                "    # Calculate the percentage of valid English words\n",
+                "    total_word_count = len(words)\n",
+                "    percentage_valid = (valid_word_count / total_word_count) * 100 if total_word_count > 0 else 0\n",
+                "    \n",
+                "    return percentage_valid, valid_word_count, total_word_count\n",
+                "    "
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": 38,
+            "metadata": {},
+            "outputs": [
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": [
+                        "Percentage of valid English words: 37.90%\n",
+                        "Number of valid English words: 691\n",
+                        "Total number of words: 1823\n"
+                    ]
+                }
+            ],
+            "source": [
+                "# Task 3 output\n",
+                "words_file_path = './books/words.txt'  # Path to the text file containing the list of English words\n",
+                "english_words = load_english_words(words_file_path)\n",
+                "\n",
+                "percentage_valid, valid_word_count, total_word_count = analyze_generated_text(generated_text, english_words)\n",
+                "\n",
+                "# Output the results\n",
+                "print(f\"Percentage of valid English words: {percentage_valid:.2f}%\")\n",
+                "print(f\"Number of valid English words: {valid_word_count}\")\n",
+                "print(f\"Total number of words: {total_word_count}\")"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": null,
+            "metadata": {},
+            "outputs": [
+                {
+                    "ename": "NameError",
+                    "evalue": "name 'json' is not defined",
+                    "output_type": "error",
+                    "traceback": [
+                        "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+                        "\u001b[1;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+                        "Cell \u001b[1;32mIn[43], line 3\u001b[0m\n\u001b[0;32m      1\u001b[0m \u001b[38;5;66;03m# Read the Jupyter Notebook file\u001b[39;00m\n\u001b[0;32m      2\u001b[0m \u001b[38;5;28;01mwith\u001b[39;00m \u001b[38;5;28mopen\u001b[39m(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mtrigrams.ipynb\u001b[39m\u001b[38;5;124m\"\u001b[39m, mode\u001b[38;5;241m=\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mr\u001b[39m\u001b[38;5;124m\"\u001b[39m, encoding\u001b[38;5;241m=\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mutf-8\u001b[39m\u001b[38;5;124m\"\u001b[39m) \u001b[38;5;28;01mas\u001b[39;00m f:\n\u001b[1;32m----> 3\u001b[0m     trigrams \u001b[38;5;241m=\u001b[39m \u001b[43mjson\u001b[49m\u001b[38;5;241m.\u001b[39mloads(f\u001b[38;5;241m.\u001b[39mread())\n\u001b[0;32m      5\u001b[0m \u001b[38;5;66;03m# Convert the notebook content to JSON\u001b[39;00m\n\u001b[0;32m      6\u001b[0m trigrams_json \u001b[38;5;241m=\u001b[39m json\u001b[38;5;241m.\u001b[39mdumps(trigrams, indent\u001b[38;5;241m=\u001b[39m\u001b[38;5;241m4\u001b[39m)\n",
+                        "\u001b[1;31mNameError\u001b[0m: name 'json' is not defined"
+                    ]
+                }
+            ],
+            "source": [
+                "import json\n",
+                "# Read the Jupyter Notebook file\n",
+                "with open(\"trigrams.ipynb\", mode=\"r\", encoding=\"utf-8\") as f:\n",
+                "    trigrams = json.loads(f.read())\n",
+                "\n",
+                "# Convert the notebook content to JSON\n",
+                "trigrams_json = json.dumps(trigrams, indent=4)\n",
+                "\n",
+                "# Save the JSON content to a new file\n",
+                "with open(\"trigrams.json\", mode=\"w\", encoding=\"utf-8\") as f:\n",
+                "    f.write(trigrams_json)\n",
+                "\n",
+                "print(\"Conversion to JSON completed.\")"
+            ]
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "codemirror_mode": {
+                "name": "ipython",
+                "version": 3
+            },
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
+            "name": "python",
+            "nbconvert_exporter": "python",
+            "pygments_lexer": "ipython3",
+            "version": "3.13.0"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 2
+}
