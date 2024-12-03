@@ -130,12 +130,15 @@ function generateElizaResponse(input) {
 
 // Function to transform input for pronouns and tense
 function transformInput(input) {
-    let transformedInput = input;
+    // Remove punctuation from the input
+    const sanitizedInput = input.replace(/[?!,.]/g, '');
+
+    let transformedInput = sanitizedInput;
 
     for (const [key, value] of Object.entries(transformations)) {
-        const regex = new RegExp(`\\b${key}[?!,.]\\b`, 'gi');
+        const regex = new RegExp(`\\b${key}\\b`, 'gi');
         transformedInput = transformedInput.replace(regex, value);
     }
 
-    return `${transformedInput}`;
+    return transformedInput;
 }
