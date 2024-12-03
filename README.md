@@ -26,7 +26,7 @@ This file contains Markdown explaining each task and what needs to be done along
 
 ## Eliza Chatbot Project
 ### Link to Github Pages:
-https://leventekalman02.github.io/Emerging-Technologies-Tasks/
+[Github Pages For Eliza Chatbot](https://leventekalman02.github.io/Emerging-Technologies-Tasks/)
 
 ### What this section is about and what does it do:
 
@@ -40,4 +40,4 @@ It removes punctuation from sentences, so if you say ``I feel Happy?``, the ``?`
 
 ### How to get started with this project:
 
-If you ``Click`` the Github Pages link above, it should take you to the Eliza Chatbot chat where you can start chatting with the bot immediately.
+If you ``Click`` the [Github Pages](https://leventekalman02.github.io/Emerging-Technologies-Tasks/) link above, it should take you to the Eliza Chatbot chat where you can start chatting with the bot immediately.
